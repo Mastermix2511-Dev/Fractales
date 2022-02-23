@@ -14,50 +14,56 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 /**
- * The Julia Fractal family is my personal favorite.  This class is to show and
- * explain the math behind it.  It can be very complicated, so I will try to
- * explain it as best as I can.  This is NOT meant to be a comrehensive guide
- * to Fractals, or the Julia Set.  This is only to help you understand how it 
- * works.  This is a VERY simple example, and is for educational purposes only.
+ * The Julia Fractal family is my personal favorite. This class is to show and
+ * explain the math behind it. It can be very complicated, so I will try to
+ * explain it as best as I can. This is NOT meant to be a comrehensive guide
+ * to Fractals, or the Julia Set. This is only to help you understand how it
+ * works. This is a VERY simple example, and is for educational purposes only.
  * Please do not claim this as your own, or submit it as your own work.
  * 
- * Please excuse any spelling errors you may find.  I'm a programmer, not a speller.
+ * Please excuse any spelling errors you may find. I'm a programmer, not a
+ * speller.
  * 
- * Complex Numbers are the key to fractals.  A complex number is in the form:
+ * Complex Numbers are the key to fractals. A complex number is in the form:
  * a+bi, where a & b are real numbers, and i = sqrt(-1).
  * 
- * Generating fractals involves doing math in the Complex Plane.  You can think 
+ * Generating fractals involves doing math in the Complex Plane. You can think
  * of the Complex Plane in the following way:
  * i-values
  * |
  * |* (1+6i)
  * |
- * |  * (2+4i)
+ * | * (2+4i)
  * |
- * |      *(x+yi)
+ * | *(x+yi)
  * |_ _ _ _ _ _ real values.
  * 
- * The i-values (imaginary values) go up & down the "y" axis, and the real numbers
- * go out along the "x" axis.  (Note that I only drew the one quadrant, all four
+ * The i-values (imaginary values) go up & down the "y" axis, and the real
+ * numbers
+ * go out along the "x" axis. (Note that I only drew the one quadrant, all four
  * are used).
  * 
- * The Julia Set is created by putting each point through an algorithm, and adding
- * it to the set by determining how close it is to infinity.  If the threshold^2
- * is less than the Magnitude of the Complex Number (where magnitude = a^2 + b^2),
- * the point is added to the set.  The iteration value determins how many times the 
- * point is put through the algorithm.  Putting it through more times, and making 
- * the threshold much smaller, leads to cleaner images, but they take longer to create.
+ * The Julia Set is created by putting each point through an algorithm, and
+ * adding
+ * it to the set by determining how close it is to infinity. If the threshold^2
+ * is less than the Magnitude of the Complex Number (where magnitude = a^2 +
+ * b^2),
+ * the point is added to the set. The iteration value determins how many times
+ * the
+ * point is put through the algorithm. Putting it through more times, and making
+ * the threshold much smaller, leads to cleaner images, but they take longer to
+ * create.
  * 
  * The values in this example give a good depiction of a Julia Set.
  *
  * @author Neil
  */
-public class JuliaExampleColor {
+public class JuliaColors {
     // The width and height of the window.
     private static final int WIDTH = 350;
     private static final int HEIGHT = 350;
-    private static final double CX = -0.7;
-    private static final double CY = 0.27015;
+    private static final double cx = -0.7;
+    private static final double cy = 0.27015;
     // The ComplexNumber to base the Julia Set off of.
     private static ComplexNumber c = new ComplexNumber(-0.223, 0.745);
     // Array of booleans stating which pixels make up the fractal.
@@ -72,27 +78,28 @@ public class JuliaExampleColor {
     // The maximum Magnitude of the ComplexNumer to be allowed in the Set.
     private double threshold = 1;
     // The number of times that the algorithm recurses.
-    private int iterations = 200;
+    private int iterations = 300;
+
     /**
      * The meat of the program is in the constructor.
      * This handles the Frame, filling the array, painting,
      * and coloring.
      */
-    public JuliaExampleColor(){
+    public JuliaColors() {
         // Create a BufferedImage to paint on.
-        image = new BufferedImage(WIDTH,HEIGHT,BufferedImage.TYPE_INT_RGB);
+        image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
         // Fill the booean[][].
         getValues();
-        // Go through the array and set the pixel color on the BufferedImage 
+        // Go through the array and set the pixel color on the BufferedImage
         // according to the values in the array.
         for (int i = 0; i < WIDTH; i++) {
             for (int j = 0; j < HEIGHT; j++) {
-                double zx = 1.5 * (i - WIDTH / 2) / (0.5 * threshold * WIDTH) ;
+                double zx = 1.5 * (i - WIDTH / 2) / (0.5 * threshold * WIDTH);
                 double zy = (j - HEIGHT / 2) / (0.5 * threshold * HEIGHT);
                 float x = iterations;
                 while (zx * zx + zy * zy < 4 && x > 0) {
-                    double tmp = zx * zx - zy * zy + CX;
-                    zy = 2.0 * zx * zy + CY;
+                    double tmp = zx * zx - zy * zy + cx;
+                    zy = 2.0 * zx * zy + cy;
                     zx = tmp;
                     x--;
                 }
@@ -100,67 +107,71 @@ public class JuliaExampleColor {
                 image.setRGB(i, j, c);
             }
         }
-        
+
         // Create a Frame to display the Fractal.
-        JFrame f = new JFrame("Julia Example"){
+        JFrame f = new JFrame("Julia Example") {
             // Override the paint method (for simplicity)
             @Override
-            public void paint(java.awt.Graphics g){
-                g.drawImage(image,0,0,null);
+            public void paint(java.awt.Graphics g) {
+                g.drawImage(image, 0, 0, null);
             }
         };
         // Set other Frame settings.
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setSize(WIDTH,HEIGHT);
+        f.setSize(WIDTH, HEIGHT);
         f.repaint();
         f.setVisible(true);
     }
+
     /**
      * Fill the values boolean[][] with data.
      */
-    private void getValues(){
+    private void getValues() {
         values = new boolean[WIDTH][HEIGHT];
         // Go through each pixel.
-        for(int i=0;i<WIDTH;i++){
-            for(int j=0;j<HEIGHT;j++){
+        for (int i = 0; i < WIDTH; i++) {
+            for (int j = 0; j < HEIGHT; j++) {
                 /**
-                 * Each pixel represents a ComplexNumber.  The pixel in the center
-                 * represents 0,0 on the Complex Plane.  The following two lines
+                 * Each pixel represents a ComplexNumber. The pixel in the center
+                 * represents 0,0 on the Complex Plane. The following two lines
                  * treat the window as a scaled version of the bounds set above
-                 * (See min and max vars above).  They scale the numbers, and 
+                 * (See min and max vars above). They scale the numbers, and
                  * shift everything around so it lies up right.
                  */
-		double a = (double)i*(maxX-minX)/(double)WIDTH + minX;
-		double b = (double)j*(maxY-minY)/(double)HEIGHT + minY;
+                double a = (double) i * (maxX - minX) / (double) WIDTH + minX;
+                double b = (double) j * (maxY - minY) / (double) HEIGHT + minY;
                 // fill the boolean array.
-                values[i][j] = isInSet(new ComplexNumber(a,b));
+                values[i][j] = isInSet(new ComplexNumber(a, b));
             }
         }
     }
+
     /**
      * Determine if the ComplexNumber cn fits in the Fractal pattern.
-     * This is the basic quadratic julia set.  The formula is:
+     * This is the basic quadratic julia set. The formula is:
      * f(z+1) = z^2+c
      * where z is a complex number,
      * and where c is a constant complex number.
+     * 
      * @param cn The ComplexNumber to check.
      * @return true if it is in the set, else false.
      */
-    private boolean isInSet(ComplexNumber cn){
-        for(int i=0;i<iterations;i++){
+    private boolean isInSet(ComplexNumber cn) {
+        for (int i = 0; i < iterations; i++) {
             // The basic Julia Set Algorithm.
             // Other Algorithms can be found online.
             cn = cn.square().add(c);
         }
         // If the threshold^2 is larger than the magnitude, return true.
-        return cn.magnitude()<threshold*threshold;
+        return cn.magnitude() < threshold * threshold;
     }
+
     /**
      * The Method the execute this program
+     * 
      * @param args Command Line args
      */
-    public static void main(String[] args){
-        new JuliaExampleColor();
+    public static void main(String[] args) {
+        new JuliaColors();
     }
 }
-
